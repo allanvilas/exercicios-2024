@@ -17,18 +17,18 @@ class Scrapper {
    * Loads paper information from the HTML and returns the array with the data.
    */
   public function scrap(\DOMDocument $dom): array {
-    $DomNodeElem = $dom->getElementsByTagName('a');
+    $domNodeElem = $dom->getElementsByTagName('a');
     
     $papers = [];
 
-    foreach($DomNodeElem as $Elem){
+    foreach($domNodeElem as $Elem){
       $classAtt = $Elem->getAttribute('class');
-      $ElemChildNodes = $Elem->childNodes->length;
+      $elemChildNodes = $Elem->childNodes->length;
       // Filter only target <a> cards
-      if( $ElemChildNodes > 0 && strpos($classAtt, 'paper-card') !== false ) {
-        $id = $this->ExtractID($Elem);
-        $title = $this->ExtractTitle($Elem);
-        $type = $this->ExtractType($Elem);
+      if( $elemChildNodes > 0 && strpos($classAtt, 'paper-card') !== false ) {
+        $id = $this->extractId($Elem);
+        $title = $this->extractTitle($Elem);
+        $type = $this->extractType($Elem);
         $persons = $this->ExtractAuthors($Elem);
         
         $localPaper = new Paper($id,$title,$type,$persons);
@@ -38,27 +38,27 @@ class Scrapper {
     return $papers;
   }
 
-  private function ExtractTitle($DOMElem) : string{
+  private function extractTitle($domElem) : string{
     try{
-      $title = $DOMElem->firstChild->nodeValue;
+      $title = $domElem->firstChild->nodeValue;
       return $title;
     } catch(Exception $e) { 
       return 'Title not founded!';
     } 
   }
 
-  private function ExtractType($DOMElem) : string{
+  private function extractType($domElem) : string{
     try{
-      $type = $DOMElem->childNodes->item(2)->firstChild->nodeValue;
+      $type = $domElem->childNodes->item(2)->firstChild->nodeValue;
       return $type;
     } catch(Exception $e) { 
       return 'Type not founded!';
     } 
   }
 
-  private function ExtractID($DOMElem) : string{
+  private function extractId($domElem) : string{
     try{
-      $link = $DOMElem->getAttribute('href');
+      $link = $domElem->getAttribute('href');
       $id = basename($link);
       return $id;
     } catch(Exception $e) { 
@@ -66,9 +66,9 @@ class Scrapper {
     } 
   }
 
-  private function ExtractAuthors($DOMElem) : array{
+  private function ExtractAuthors($domElem) : array{
     try{
-      $authors = $DOMElem->childNodes->item(1)->childNodes;
+      $authors = $domElem->childNodes->item(1)->childNodes;
 
       $persons = [];
 

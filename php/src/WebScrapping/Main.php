@@ -18,11 +18,11 @@ class Main {
 
     $data = (new Scrapper())->scrap($dom);
     
-    self::WriteXLSX($data);
+    self::writeXlsx($data);
 
   }
 
-  private static function WriteXLSX($data):void {
+  private static function writeXlsx($data):void {
 
     $filePath = __DIR__ . '\\Export\\Export.xlsx';
 
@@ -55,22 +55,22 @@ class Main {
       WriterEntityFactory::createCell('Author 9 Institution')
     ];
 
-    $Header = WriterEntityFactory::createRow($titleCells);
-    $writer->addRow($Header);
+    $header = WriterEntityFactory::createRow($titleCells);
+    $writer->addRow($header);
 
     // Add the scrapped data to the xlsx
     foreach($data as $paper) {
-      $PaperRow = [
+      $paperRow = [
         WriterEntityFactory::createCell($paper->id),  
         WriterEntityFactory::createCell($paper->title),  
         WriterEntityFactory::createCell($paper->type),  
       ];
       foreach($paper->authors as $key => $person) {
-        array_push($PaperRow, WriterEntityFactory::createCell(str_replace(';','',$person->name)));
-        array_push($PaperRow, WriterEntityFactory::createCell($person->institution));
+        array_push($paperRow, WriterEntityFactory::createCell(str_replace(';','',$person->name)));
+        array_push($paperRow, WriterEntityFactory::createCell($person->institution));
       }
 
-      $paperData = WriterEntityFactory::createRow($PaperRow);
+      $paperData = WriterEntityFactory::createRow($paperRow);
       $writer->addRow($paperData);
     }
     
