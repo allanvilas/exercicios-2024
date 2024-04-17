@@ -1,6 +1,6 @@
 <?php
 
-namespace Chuva\Php\WebScrapping\Entity;
+namespace Chuva\php\WebScrapping\Entity;
 
 /**
  * The Paper class represents the row of the parsed data.
@@ -39,6 +39,10 @@ class Paper {
    * Builder.
    */
   public function __construct($id, $title, $type, $authors = []) {
+    $this->id = $id;
+    $this->title = $title;
+    $this->type = $type;
+    $this->authors = $authors; 
   }
 
 }
