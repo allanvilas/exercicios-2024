@@ -4,7 +4,6 @@ namespace Chuva\Php\WebScrapping;
 
 use Chuva\Php\WebScrapping\Entity\Paper;
 use Chuva\Php\WebScrapping\Entity\Person;
-use Exception;
 
 require_once 'Entity/Paper.php';
 require_once 'Entity/Person.php';
@@ -17,79 +16,95 @@ class Scrapper {
    * Loads paper information from the HTML and returns the array with the data.
    */
   public function scrap(\DOMDocument $dom): array {
-    $DomNodeElem = $dom->getElementsByTagName('a');
-    
+    $domNodeelem = $dom->getelementsByTagName('a');
+
     $papers = [];
 
-    foreach($DomNodeElem as $Elem){
-      $classAtt = $Elem->getAttribute('class');
-      $ElemChildNodes = $Elem->childNodes->length;
-      // Filter only target <a> cards
-      if( $ElemChildNodes > 0 && strpos($classAtt, 'paper-card') !== false ) {
-        $id = $this->ExtractID($Elem);
-        $title = $this->ExtractTitle($Elem);
-        $type = $this->ExtractType($Elem);
-        $persons = $this->ExtractAuthors($Elem);
-        
-        $localPaper = new Paper($id,$title,$type,$persons);
-        array_push($papers,$localPaper);
+    foreach ($domNodeelem as $elem) {
+      $classAtt = $elem->getAttribute('class');
+      $elemChildNodes = $elem->childNodes->length;
+      // Filter only target <a> cards.
+      if ($elemChildNodes > 0 && strpos($classAtt, 'paper-card') !== FALSE) {
+        $id = $this->extractId($elem);
+        $title = $this->extractTitle($elem);
+        $type = $this->extractType($elem);
+        $persons = $this->extractAuthors($elem);
+
+        $localPaper = new Paper($id, $title, $type, $persons);
+        array_push($papers, $localPaper);
       }
     }
     return $papers;
   }
 
-  private function ExtractTitle($DOMElem) : string{
-    try{
-      $title = $DOMElem->firstChild->nodeValue;
+  /**
+   * This functions extrac the title from DOM.
+   */
+  private function extractTitle($domElem) : string {
+    try {
+      $title = $domElem->firstChild->nodeValue;
       return $title;
-    } catch(Exception $e) { 
+    }
+    catch (\Exception $e) {
       return 'Title not founded!';
-    } 
+    }
   }
 
-  private function ExtractType($DOMElem) : string{
-    try{
-      $type = $DOMElem->childNodes->item(2)->firstChild->nodeValue;
+  /**
+   * This functions extrac the Type from DOM.
+   */
+  private function extractType($domElem) : string {
+    try {
+      $type = $domElem->childNodes->item(2)->firstChild->nodeValue;
       return $type;
-    } catch(Exception $e) { 
+    }
+    catch (\Exception $e) {
       return 'Type not founded!';
-    } 
+    }
   }
 
-  private function ExtractID($DOMElem) : string{
-    try{
-      $link = $DOMElem->getAttribute('href');
+  /**
+   * This functions extrac the ID from DOM.
+   */
+  private function extractId($domElem) : string {
+    try {
+      $link = $domElem->getAttribute('href');
       $id = basename($link);
       return $id;
-    } catch(Exception $e) { 
+    }
+    catch (\Exception $e) {
       return 'Id not founded!';
-    } 
+    }
   }
 
-  private function ExtractAuthors($DOMElem) : array{
-    try{
-      $authors = $DOMElem->childNodes->item(1)->childNodes;
+  /**
+   * This functions extrac the Authors from DOM.
+   */
+  private function extractAuthors($domElem) : array {
+    try {
+      $authors = $domElem->childNodes->item(1)->childNodes;
 
       $persons = [];
 
-      foreach($authors as $author){
-        if($author->hasAttributes()){
+      foreach ($authors as $author) {
+        if ($author->hasAttributes()) {
 
-          // Pushs persons to a staging array before return
+          // Pushs persons to a staging array before return.
           $per = new Person(
-            $author->nodeValue, 
+            $author->nodeValue,
             $author->getAttribute('title')
           );
 
-          array_push($persons,$per);            
+          array_push($persons, $per);
         }
       }
-      return $persons;      
-    } catch(Exception $e) { 
+      return $persons;
+    }
+    catch (\Exception $e) {
       return [
-        new Person('Person name not found','Person institution not found')
+        new Person('Person name not found', 'Person institution not found'),
       ];
-    } 
+    }
   }
 
 }
