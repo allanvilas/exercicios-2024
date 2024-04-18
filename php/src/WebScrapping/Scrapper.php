@@ -28,7 +28,6 @@ class Scrapper {
       $elemChildNodes = $elem->childNodes->length;
       
       // Filter only target <a> cards.
-
       if ( $elemChildNodes > 0 && strpos($classAtt, 'paper-card') !== FALSE ) {
 
         $id = $this->extractId($elem);
@@ -45,8 +44,9 @@ class Scrapper {
   }
 
   private function extractTitle($domElem) : string{
-
-    //Extract Title.
+    /**
+     * Does the scrapping of a webpage.
+     */
 
     try {
 
@@ -59,8 +59,9 @@ class Scrapper {
   }
 
   private function extractType($domElem) : string{
-
-   //Extract type.
+    /**
+     * Does the scrapping of a webpage.
+     */
 
     try {
 
@@ -74,8 +75,9 @@ class Scrapper {
   }
 
   private function extractId($domElem) : string{
-
-    //Extract Id.
+    /**
+     * Does the scrapping of a webpage.
+     */
 
     try {
 
@@ -90,7 +92,10 @@ class Scrapper {
   }
 
   private function extractAuthors($domElem) : array{
-    // Extract authors information.
+    /**
+     * Does the scrapping of a webpage.
+     */
+
     try {
 
       $authors = $domElem->childNodes->item(1)->childNodes;
@@ -108,20 +113,17 @@ class Scrapper {
             $author->nodeValue, 
             $author->getAttribute('title')
           );
-
           array_push($persons, $per);            
         }
-
       }
 
-      return $persons;      
+      return $persons; 
+           
     } catch (Exception $e) {
 
       return [
-        new Person('Person name not found','Person institution not found')
+        new Person('Person name not found','Person institution not found'), 
       ];
     }
-
   }
-
 }

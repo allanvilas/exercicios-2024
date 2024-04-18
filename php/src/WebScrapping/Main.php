@@ -12,6 +12,7 @@ class Main {
   /**
    * Main runner, instantiates a Scrapper and runs.
    */
+
   public static function run(): void {
     $dom = new \DOMDocument('1.0', 'utf-8');
     $dom->loadHTMLFile(__DIR__ . '/../../assets/origin.html');
@@ -20,9 +21,9 @@ class Main {
   }
 
   private static function writerXlsx($data):void {
-    
-    // Export scrapped data as xlsx.
-
+    /**
+     * Export scrapped data as xlsx.
+     */
     $filePath = __DIR__ . '\\Export\\Export.xlsx';
 
     $writer = WriterEntityFactory::createXLSXWriter();
@@ -61,8 +62,8 @@ class Main {
     foreach ($data as $paper) {
 
       $paperRow = [
-        WriterEntityFactory::createCell($paper->id), 
-        WriterEntityFactory::createCell($paper->title), 
+        WriterEntityFactory::createCell($paper->id),
+        WriterEntityFactory::createCell($paper->title),
         WriterEntityFactory::createCell($paper->type),
       ];
       foreach ($paper->authors as $key => $person) {
