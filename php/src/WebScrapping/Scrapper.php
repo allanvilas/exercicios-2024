@@ -4,6 +4,7 @@ namespace Chuva\Php\WebScrapping;
 
 use Chuva\Php\WebScrapping\Entity\Paper;
 use Chuva\Php\WebScrapping\Entity\Person;
+use FFI\Exception;
 
 require_once 'Entity/Paper.php';
 require_once 'Entity/Person.php';
