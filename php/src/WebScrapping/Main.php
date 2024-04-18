@@ -1,8 +1,8 @@
 <?php
 
 namespace Chuva\Php\WebScrapping;
+
 use Box\Spout\Writer\Common\Creator\WriterEntityFactory;
-use Box\Spout\Common\Entity\Row;
 
 require_once 'Scrapper.php';
 /**
@@ -12,25 +12,28 @@ class Main {
   /**
    * Main runner, instantiates a Scrapper and runs.
    */
+
   public static function run(): void {
     $dom = new \DOMDocument('1.0', 'utf-8');
     $dom->loadHTMLFile(__DIR__ . '/../../assets/origin.html');
 
     $data = (new Scrapper())->scrap($dom);
     
-    self::WriteXLSX($data);
+    self::writerXlsx($data);
 
   }
 
-  private static function WriteXLSX($data):void {
-
+  private static function writerXlsx($data):void {
+    /**
+   * Export scrapped data as xlsx
+   */
     $filePath = __DIR__ . '\\Export\\Export.xlsx';
 
     $writer = WriterEntityFactory::createXLSXWriter();
-    
+
     $writer->openToFile($filePath);
     
-    // Pre generate the readers
+    // Pre generate the readers.
     $titleCells = [
       WriterEntityFactory::createCell('ID'),
       WriterEntityFactory::createCell('Title'),
@@ -55,26 +58,29 @@ class Main {
       WriterEntityFactory::createCell('Author 9 Institution')
     ];
 
-    $Header = WriterEntityFactory::createRow($titleCells);
-    $writer->addRow($Header);
+    $header = WriterEntityFactory::createRow($titleCells);
+    $writer->addRow($header);
 
-    // Add the scrapped data to the xlsx
+    // Add the scrapped data to the xlsx.
     foreach($data as $paper) {
-      $PaperRow = [
+
+      $paperRow = [
         WriterEntityFactory::createCell($paper->id),  
-        WriterEntityFactory::createCell($paper->title),  
-        WriterEntityFactory::createCell($paper->type),  
+        WriterEntityFactory::createCell($paper->title),   
+        WriterEntityFactory::createCell($paper->type),
       ];
       foreach($paper->authors as $key => $person) {
-        array_push($PaperRow, WriterEntityFactory::createCell(str_replace(';','',$person->name)));
-        array_push($PaperRow, WriterEntityFactory::createCell($person->institution));
+        array_push($paperRow, WriterEntityFactory::createCell(str_replace(';','',$person->name)));
+        array_push($paperRow, WriterEntityFactory::createCell($person->institution));
       }
 
-      $paperData = WriterEntityFactory::createRow($PaperRow);
+      $paperData = WriterEntityFactory::createRow($paperRow);
       $writer->addRow($paperData);
     }
     
     $writer->close();
+    
   }
+
 }
 
