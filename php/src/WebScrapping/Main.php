@@ -9,10 +9,10 @@ require_once 'Scrapper.php';
  * Runner for the Webscrapping exercice.
  */
 class Main {
+
   /**
    * Main runner, instantiates a Scrapper and runs.
    */
-
   public static function run(): void {
     $dom = new \DOMDocument('1.0', 'utf-8');
     $dom->loadHTMLFile(__DIR__ . '/../../assets/origin.html');
@@ -20,10 +20,10 @@ class Main {
     self::writerXlsx($data);
   }
 
+  /**
+   * WriterXlsx export the scrapped data as xlsx.
+   */
   private static function writerXlsx($data):void {
-    /**
-     * Export scrapped data as xlsx.
-     */
     $filePath = __DIR__ . '\\Export\\Export.xlsx';
 
     $writer = WriterEntityFactory::createXLSXWriter();
@@ -66,7 +66,7 @@ class Main {
         WriterEntityFactory::createCell($paper->title),
         WriterEntityFactory::createCell($paper->type),
       ];
-      foreach ($paper->authors as $key => $person) {
+      foreach ($paper->authors as $person) {
 
         array_push($paperRow, WriterEntityFactory::createCell(str_replace(';', '', $person->name)));
         array_push($paperRow, WriterEntityFactory::createCell($person->institution));
