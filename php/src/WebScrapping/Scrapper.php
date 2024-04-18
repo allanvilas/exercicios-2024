@@ -20,6 +20,11 @@ class Scrapper
     public function scrap(\DOMDocument $dom): array
     {
         $DomNodeElem = $dom->getElementsByTagName('a');
+  /**
+   * Loads paper information from the HTML and returns the array with the data.
+   */
+  public function scrap(\DOMDocument $dom): array {
+    $DomNodeElem = $dom->getElementsByTagName('a');
     
         $papers = [];
 
@@ -32,6 +37,15 @@ class Scrapper
                 $title = $this->ExtractTitle($Elem);
                 $type = $this->ExtractType($Elem);
                 $persons = $this->ExtractAuthors($Elem);
+    foreach($DomNodeElem as $Elem){
+      $classAtt = $Elem->getAttribute('class');
+      $ElemChildNodes = $Elem->childNodes->length;
+      // Filter only target <a> cards
+      if( $ElemChildNodes > 0 && strpos($classAtt, 'paper-card') !== false ) {
+        $id = $this->ExtractID($Elem);
+        $title = $this->ExtractTitle($Elem);
+        $type = $this->ExtractType($Elem);
+        $persons = $this->ExtractAuthors($Elem);
         
                 $localPaper = new Paper($id, $title, $type, $persons);
                 array_push($papers, $localPaper);
@@ -49,6 +63,14 @@ class Scrapper
             return 'Title not founded!';
         } 
     }
+  private function ExtractTitle($DOMElem) : string{
+    try{
+      $title = $DOMElem->firstChild->nodeValue;
+      return $title;
+    } catch(Exception $e) { 
+      return 'Title not founded!';
+    } 
+  }
 
     private function ExtractType($DOMElem) : string
     {
@@ -59,6 +81,14 @@ class Scrapper
             return 'Type not founded!';
         } 
     }
+  private function ExtractType($DOMElem) : string{
+    try{
+      $type = $DOMElem->childNodes->item(2)->firstChild->nodeValue;
+      return $type;
+    } catch(Exception $e) { 
+      return 'Type not founded!';
+    } 
+  }
 
     private function ExtractID($DOMElem) : string
     {
@@ -70,11 +100,23 @@ class Scrapper
             return 'Id not founded!';
         } 
     }
+  private function ExtractID($DOMElem) : string{
+    try{
+      $link = $DOMElem->getAttribute('href');
+      $id = basename($link);
+      return $id;
+    } catch(Exception $e) { 
+      return 'Id not founded!';
+    } 
+  }
 
     private function ExtractAuthors($DOMElem) : array
     {
         try{
             $authors = $DOMElem->childNodes->item(1)->childNodes;
+  private function ExtractAuthors($DOMElem) : array{
+    try{
+      $authors = $DOMElem->childNodes->item(1)->childNodes;
 
             $persons = [];
 

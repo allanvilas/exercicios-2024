@@ -36,7 +36,7 @@ class Paper{
     public $authors;
 
     /**
-     *Builder.
+     * Builder.
      */
     public function __construct($id, $title, $type, $authors = [])
     {
@@ -45,5 +45,5 @@ class Paper{
         $this->type = $type;
         $this->authors = $authors;
     }
-
+  
 }
